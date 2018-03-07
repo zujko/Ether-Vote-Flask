@@ -5,8 +5,12 @@ from solc import compile_source
 from web3.contract import ConciseContract
 from flask.ext.cors import CORS, cross_origin
 from flask_cors import CORS
+import time
 
-web3 = Web3(HTTPProvider('http://localhost:8545'))
+print('Waiting for blockchain to start')
+time.sleep(3)
+
+web3 = Web3(HTTPProvider('http://blockchain:8545'))
 
 # Get contract as text
 with open('ElectionContract.sol', 'r') as contract:
@@ -27,6 +31,17 @@ contract_address = tx_receipt['contractAddress']
 
 # Contract instance in concise mode
 contract_instance = web3.eth.contract(contract_interface['abi'], contract_address, ContractFactoryClass=ConciseContract)
+
+def authorize_all():
+    """
+    Gives all accounts in the test blockchain access to vote
+    """
+    voters = []
+    for x in range(0, 10):
+        voters.append(web3.eth.accounts[x])
+    contract_instance.authorizeVoters(voters, transact={'from': web3.eth.accounts[0]})
+
+authorize_all()
 
 app = Flask(__name__)
 CORS(app)
