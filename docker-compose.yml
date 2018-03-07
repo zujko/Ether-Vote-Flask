@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    command: python -m flask run
+    ports:
+      - "5000:5000"
+
+  blockchain:
+    image: trufflesuite/ganache-cli
+    expose:
+      - "8545"
