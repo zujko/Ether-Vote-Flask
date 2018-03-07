@@ -1,16 +1,16 @@
 import json
-from flask import Flask
+from flask import Flask, request
 from web3 import Web3, HTTPProvider
 from solc import compile_source
 from web3.contract import ConciseContract
-from flask.ext.cors import CORS, cross_origin
 from flask_cors import CORS
 import time
+
 
 print('Waiting for blockchain to start')
 time.sleep(3)
 
-web3 = Web3(HTTPProvider('http://blockchain:8545'))
+web3 = Web3(HTTPProvider('http://localhost:8545'))
 
 # Get contract as text
 with open('ElectionContract.sol', 'r') as contract:
@@ -50,7 +50,6 @@ CORS(app)
 def hello_world():
     return 'Hello World'
 
-@cross_origin(origin='*',headers=['Content-Type','Authorization'])
 @app.route('/canidates')
 def show_entries():
     length = contract_instance.getCandidatesCount()
@@ -61,6 +60,30 @@ def show_entries():
         canidates.append({'canidateName':name, 'votes':listy[1] })
     response = app.response_class(
         response=json.dumps(canidates),
+        status=200,
+        mimetype='application/json'
+    )
+    return response
+
+@app.route('/vote', methods=['POST'])
+def vote():
+    print('vote')
+
+    content = request.get_json(silent=True)
+    print(content)
+
+    index = -1
+    length = contract_instance.getCandidatesCount()
+    for a in range (0,length):
+        listy = contract_instance.getCanidate(a)
+        name = str(listy[0]).rstrip('\x00')
+        if name == content['canidateName']:
+            index = a
+            print(name)
+    if index != -1:
+        contract_instance.vote(index, transact={'from': content['userAdress']})
+
+    response = app.response_class(
         status=200,
         mimetype='application/json'
     )
