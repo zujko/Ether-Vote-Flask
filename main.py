@@ -2,8 +2,12 @@ from flask import Flask
 from web3 import Web3, HTTPProvider
 from solc import compile_source
 from web3.contract import ConciseContract
+import time
 
-web3 = Web3(HTTPProvider('http://localhost:8545'))
+print('Waiting for blockchain to start')
+time.sleep(3)
+
+web3 = Web3(HTTPProvider('http://blockchain:8545'))
 
 # Get contract as text
 with open('ElectionContract.sol', 'r') as contract:
