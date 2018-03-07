@@ -1,9 +1,9 @@
-import json
-from flask import Flask, request
+from flask import Flask, request, render_template
 from web3 import Web3, HTTPProvider
 from solc import compile_source
 from web3.contract import ConciseContract
-from flask_cors import CORS
+#from flask_cors import CORS, cross_origin
+import json
 import time
 
 
@@ -44,20 +44,21 @@ def authorize_all():
 authorize_all()
 
 app = Flask(__name__)
-CORS(app)
+#CORS(app)
 
 @app.route('/')
 def hello_world():
-    return 'Hello World'
+    return render_template('index.html')
 
 @app.route('/canidates')
 def show_entries():
     length = contract_instance.getCandidatesCount()
-    canidates = [];
+    canidates = []
     for a in range (0,length):
         listy = contract_instance.getCanidate(a)
         name = str(listy[0]).rstrip('\x00')
         canidates.append({'canidateName':name, 'votes':listy[1] })
+
     response = app.response_class(
         response=json.dumps(canidates),
         status=200,
