@@ -7,7 +7,7 @@ contract Election {
     bytes32 name;
     uint voteCount;
   }
-  
+
   // Represents a single voter
   // voted specifies if they have already voted
   // voteIndex specifies who they voted for
@@ -17,7 +17,7 @@ contract Election {
     uint voteIndex;
     uint weight;
   }
-  
+
   // This address represents the person who created the contract
   // and who can authorize voters
   address public owner;
@@ -42,9 +42,9 @@ contract Election {
 
   // Constructor
   function Election(string _name, uint durationMin, bytes32[] candidateLst) {
-    owner = msg.sender; 
+    owner = msg.sender;
     name = _name;
-    
+
     // the 'now' variable is the creation time of the current block
     electionEnd = now + (durationMin * 1 minutes);
 
@@ -60,11 +60,11 @@ contract Election {
 
     // Make sure voter has not already voted
     require(!voters[msg.sender].voted);
-    
+
     candidates[voteIndex].voteCount += voters[msg.sender].weight;
 
     voters[msg.sender].voteIndex = voteIndex;
-    voters[msg.sender].voted = true; 
+    voters[msg.sender].voted = true;
   }
 
 
@@ -81,7 +81,7 @@ contract Election {
       }
     }
   }
-  
+
   function electionResult() {
     // Ensure only owner can see result
     require(msg.sender == owner);
@@ -97,7 +97,7 @@ contract Election {
     return candidates.length;
   }
 
-  function getUser(uint index) public constant returns(bytes32, uint) {
+  function getCanidate(uint index) public constant returns(bytes32, uint) {
     return (candidates[index].name, candidates[index].voteCount);
   }
 
