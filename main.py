@@ -25,7 +25,17 @@ contract_address = tx_receipt['contractAddress']
 # Contract instance in concise mode
 contract_instance = web3.eth.contract(contract_interface['abi'], contract_address, ContractFactoryClass=ConciseContract)
 
-print(contract_instance.getElectionName())
+def authorize_all():
+    """
+    Gives all accounts in the test blockchain access to vote
+    """
+    voters = []
+    for x in range(0, 10):
+        voters.append(web3.eth.accounts[x])
+    contract_instance.authorizeVoters(voters, transact={'from': web3.eth.accounts[0]})
+
+authorize_all()
+
 app = Flask(__name__)
 
 @app.route('/')
