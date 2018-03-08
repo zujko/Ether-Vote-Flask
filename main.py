@@ -10,7 +10,7 @@ import time
 print('Waiting for blockchain to start')
 time.sleep(3)
 
-web3 = Web3(HTTPProvider('http://localhost:8545'))
+web3 = Web3(HTTPProvider('http://blockchain:8545'))
 
 # Get contract as text
 with open('ElectionContract.sol', 'r') as contract:
@@ -50,17 +50,17 @@ app = Flask(__name__)
 def hello_world():
     return render_template('index.html')
 
-@app.route('/canidates')
+@app.route('/candidates')
 def show_entries():
     length = contract_instance.getCandidatesCount()
-    canidates = []
+    candidates = []
     for a in range (0,length):
         listy = contract_instance.getCanidate(a)
         name = str(listy[0]).rstrip('\x00')
-        canidates.append({'canidateName':name, 'votes':listy[1] })
+        candidates.append({'candidateName':name, 'votes':listy[1] })
 
     response = app.response_class(
-        response=json.dumps(canidates),
+        response=json.dumps(candidates),
         status=200,
         mimetype='application/json'
     )
@@ -68,21 +68,16 @@ def show_entries():
 
 @app.route('/vote', methods=['POST'])
 def vote():
-    print('vote')
-
     content = request.get_json(silent=True)
-    print(content)
-
     index = -1
     length = contract_instance.getCandidatesCount()
     for a in range (0,length):
         listy = contract_instance.getCanidate(a)
         name = str(listy[0]).rstrip('\x00')
-        if name == content['canidateName']:
+        if name == content['candidateName']:
             index = a
-            print(name)
     if index != -1:
-        contract_instance.vote(index, transact={'from': content['userAdress']})
+        contract_instance.vote(index, transact={'from': content['userAddress']})
 
     response = app.response_class(
         status=200,
