@@ -4,7 +4,12 @@ ENV PYTHONUNBUFFERED 1
 RUN apk update && apk add git gcc musl-dev
 
 ENV FLASK_APP=main.py
-COPY . /app
+RUN mkdir /app
 WORKDIR /app
+
+ADD ./requirements.txt /app/requirements.txt
+
 RUN pip install -r requirements.txt
-RUN cp /app/solc /usr/bin/
+ADD ./solc /usr/bin
+
+ADD . /app
