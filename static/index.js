@@ -1,7 +1,8 @@
-
 $(document).ready(function() {
 
-    $.get("http://localhost:5000/candidates",  function(data)
+    ur = window.location.href.split('/')
+    address = ur[ur.length-1].replace('#', '')
+    $.get("http://localhost:5000/candidates/"+address,  function(data)
     {
         data.forEach(function(element) {
             $('#candidateTable tbody').append('<tr><td>'+element.candidateName+'</td><td>'+element.votes+'</td></tr>');
@@ -18,7 +19,7 @@ $(document).ready(function() {
 
 });
 
-function vote()
+function vote(election_address)
 {
     var attr = $('#voteButton').attr('disabled');
 
@@ -26,7 +27,7 @@ function vote()
     {
         option = $('#canidateSelect').find('option:selected').attr('value')
         console.log(option)
-        data = { userAddress: $("#userAddress").val(), candidateName: option }
+        data = { userAddress: $("#userAddress").val(), candidateName: option, electionAddress: election_address}
         $.ajax({
           type: "POST",
           url: "http://localhost:5000/vote",
@@ -48,8 +49,6 @@ function checkVoteEnabled()
     {
         $('#voteButton').attr('disabled', true)
     }
-
-
 }
 
 

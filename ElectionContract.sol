@@ -83,21 +83,16 @@ contract Election {
   }
 
   function electionResult() {
-    // Ensure only owner can see result
-    require(msg.sender == owner);
-    // Ensure election is actually over
-    require(now >= electionEnd);
-
     for(uint x=0; x < candidates.length; x++) {
       ElectionResult(candidates[x].name, candidates[x].voteCount);
     }
   }
 
-  function getCandidatesCount() public constant returns(uint) {
+  function getCandidatesCount() constant returns(uint) {
     return candidates.length;
   }
 
-  function getCanidate(uint index) public constant returns(bytes32, uint) {
+  function getCandidate(uint index) public returns(bytes32, uint) {
     return (candidates[index].name, candidates[index].voteCount);
   }
 

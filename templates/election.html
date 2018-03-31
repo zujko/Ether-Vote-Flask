@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Ether-Vote</title>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+  <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
+</head>
+<body class="container">
+  <h1>{{election_name}}</h1>
+  {% if finished %}
+    <h2>Election ended at {{endtime}}</h2>
+  {% else %}
+    <h2>Election ends at {{endtime}}</h2>
+  {% endif %}
+  <h3></h3>
+  <div class="table-responsive">
+    <table class="table table-bordered" id ="candidateTable">
+      <thead>
+        <tr>
+          <th>Candidate</th>
+          <th>Votes</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </div>
+  User Adress:
+  <input type="text" id="userAddress" oninput="checkVoteEnabled()"/>
+  Candidate:
+  <select id="canidateSelect" onchange="checkVoteEnabled()"></select>
+  <a id="voteButton" href="#" onclick="vote('{{election_address}}')" class="btn btn-primary" disabled>Vote</a>
+</body>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="../static/index.js"></script>
+</html>
