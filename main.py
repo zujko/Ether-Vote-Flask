@@ -71,7 +71,6 @@ def make_new_election():
     content = request.get_json(silent=True)
     print(content)
 
-    contract_interface = compiled_sol['<stdin>:Election']
     constract = web3.eth.contract(abi=contract_interface['abi'], bytecode=contract_interface['bin'])
     canidates = content['canidates'].split(",")
     voters = content['voters'].split(",")
@@ -122,19 +121,21 @@ def get_candidates(election_address):
 
 @app.route('/election/<election_address>', methods=['GET'])
 def get_election(election_address):
-    cont = web3.eth.contract(contract_interface['abi'], election_address, ContractFactoryClass=ConciseContract)
-    name = cont.getElectionName()
-    endtime = int(cont.electionEnd())
-    end = datetime.datetime.fromtimestamp(endtime)
+    try:
+        cont = web3.eth.contract(contract_interface['abi'], election_address, ContractFactoryClass=ConciseContract)
+        name = cont.getElectionName()
+        endtime = int(cont.electionEnd())
+        end = datetime.datetime.fromtimestamp(endtime)
 
-    finished = False
-    if end < datetime.datetime.utcnow():
-        finished = True 
+        finished = False
+        if end < datetime.datetime.utcnow():
+            finished = True 
 
-    localtime = end.replace(tzinfo=pytz.utc).astimezone(pytz.timezone("America/New_York")).strftime('%c')
+        localtime = end.replace(tzinfo=pytz.utc).astimezone(pytz.timezone("America/New_York")).strftime('%c')
     
-    return render_template('election.html', election_name=name, election_address=election_address, finished=finished, endtime=localtime)
-
+        return render_template('election.html', election_name=name, election_address=election_address, finished=finished, endtime=localtime)
+    except:
+        return render_template('404.html'), 400
 
 @app.route('/vote', methods=['POST'])
 def vote():
