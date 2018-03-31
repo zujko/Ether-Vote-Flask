@@ -23,7 +23,8 @@
   <input type="text" id="userAddress" />
   Candidate:
   <input type="text" id="candidate" />
-  <a href="#" onclick="vote()" class="btn btn-primary">Vote</a>
+  <select id="canidateSelect" onchange="canidateSelect()"></select>
+  <a href="#" onclick="vote()" class="btn btn-primary" disabled>Vote</a>
 </body>
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script src="../static/index.js"></script>
