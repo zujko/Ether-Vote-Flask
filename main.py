@@ -28,7 +28,6 @@ contract = web3.eth.contract(abi=contract_interface['abi'], bytecode=contract_in
 tx_hash = contract.deploy(args=('Test Election', 10, ['Person 1', 'Person 2', 'Person 3']), transaction={'from': web3.eth.accounts[0], 'gas': 4800000})
 tx_receipt = web3.eth.getTransactionReceipt(tx_hash)
 contract_address = tx_receipt['contractAddress']
-print(contract_address)
 
 # Contract instance in concise mode
 contract_instance = web3.eth.contract(contract_interface['abi'], contract_address, ContractFactoryClass=ConciseContract)
@@ -86,7 +85,7 @@ def make_new_election():
         contract_instance = web3.eth.contract(contract_interface['abi'], contract_address, ContractFactoryClass=ConciseContract)
         authorize_users(contract_instance, voters, content['author'])
         response = app.response_class(
-            response= json.dumps('made election\n'+ request.url_root+'/election/'+ contract_address),
+            response= json.dumps('made election\n'+ request.url_root+'election/'+ contract_address),
             status=200,
             mimetype='application/json'
         )
