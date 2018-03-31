@@ -78,7 +78,7 @@ def make_new_election():
     voters = content['voters'].split(",")
 
     try:
-        tx_hash = contract.deploy(args=(content['title'], 99999, strippedCandidates), \
+        tx_hash = contract.deploy(args=(content['title'], int(content['timeLimit']), strippedCandidates), \
             transaction={'from': content['author'], 'gas': 4800000})
         tx_receipt = web3.eth.getTransactionReceipt(tx_hash)
         contract_address = tx_receipt['contractAddress']

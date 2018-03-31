@@ -1,7 +1,8 @@
 function makeElection()
 {
     data = { title: $('#titleText').val(), author: $('#userAddressText').val(),
-        voters: $('#voterList').val(), candidates: $('#candidateList').val()}
+        voters: $('#voterList').val(), candidates: $('#candidateList').val(),
+        timeLimit: $('#timeLimit').val()}
 
     $.ajax({
         type: "POST",
