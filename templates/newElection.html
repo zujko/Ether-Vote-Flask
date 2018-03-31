@@ -8,25 +8,29 @@
 
     <body class="container">
       <h1>Create a new election</h1>
-        <div style='display:block'>
+        <form>
             Title:
+            <br>
             <input type="text" id="titleText"></input>
-        </div>
-        <div style='display:block'>
-            Author User Adress:
-            <input type="text" id="userAddressText"/>
-        </div>
-        <div style='display:block'>
-            Canidates, comma seperated:
-        </div>
-        <textarea id="canidateList" style='display:block' rows="4" cols="50"></textarea>
-        <div style='display:block'>
-            Voter addresses, comma seperated:
-        </div>
-        <textarea id="voterList" style='display:block' rows="4" cols="50"></textarea>
-      <a id="makeElectionButton" href="#" onclick="makeElection()"
-      class="btn btn-primary">Make Election</a>
+            <br>
 
+            Author User Adress:
+            <br>
+            <input type="text" id="userAddressText"/>
+            <br>
+
+            Canidates, comma seperated:
+            <br>
+
+            <textarea id="canidateList" rows="4" cols="50"></textarea>
+            <br>
+                Voter addresses, comma seperated:
+            <br>
+            <textarea id="voterList" rows="4" cols="50"></textarea>
+            <br>
+            <a id="makeElectionButton" href="#" onclick="makeElection()"
+            class="btn btn-primary">Make Election</a>
+        </form>
       <p id='showMessage'>
       </p>
 
