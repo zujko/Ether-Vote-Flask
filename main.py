@@ -41,6 +41,17 @@ def authorize_all():
         voters.append(web3.eth.accounts[x])
     contract_instance.authorizeVoters(voters, transact={'from': web3.eth.accounts[0]})
 
+def authorize_users(contract, voters, author):
+    for voter in voters:
+        voterList = []
+        voterList.append(voter)
+        try:
+            contract.authorizeVoters(voterList, transact={'from': author})
+        except ValueError:
+            print(ValueError)
+            print('error'+author)
+
+
 authorize_all()
 
 app = Flask(__name__)
@@ -49,6 +60,43 @@ app = Flask(__name__)
 @app.route('/')
 def hello_world():
     return render_template('index.html')
+
+@app.route('/newElection')
+def new_election():
+    return render_template('newElection.html')
+
+@app.route('/createNewElection', methods=['POST'])
+def make_new_election():
+    content = request.get_json(silent=True)
+    print(content)
+
+    contract_interface = compiled_sol['<stdin>:Election']
+    constract = web3.eth.contract(abi=contract_interface['abi'], bytecode=contract_interface['bin'])
+    canidates = content['canidates'].split(",")
+    voters = content['voters'].split(",")
+
+    try:
+        tx_hash = contract.deploy(args=(content['title'], 99999, canidates), \
+            transaction={'from': content['author'], 'gas': 4800000})
+        tx_receipt = web3.eth.getTransactionReceipt(tx_hash)
+        contract_address = tx_receipt['contractAddress']
+        contract_instance = web3.eth.contract(contract_interface['abi'], contract_address, ContractFactoryClass=ConciseContract)
+        authorize_users(contract_instance, voters, content['author'])
+        response = app.response_class(
+            response= json.dumps('made election\n'+ request.url_root+'/Election/'+ contract_address),
+            status=200,
+            mimetype='application/json'
+        )
+        return response
+    except ValueError:
+        print(ValueError)
+        response = app.response_class(
+            response= json.dumps('error creating election'),
+            status=400,
+            mimetype='application/json'
+        )
+        return response
+
 
 @app.route('/candidates')
 def show_entries():
