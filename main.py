@@ -69,22 +69,24 @@ def new_election():
 @app.route('/createNewElection', methods=['POST'])
 def make_new_election():
     content = request.get_json(silent=True)
-    print(content)
 
     contract_interface = compiled_sol['<stdin>:Election']
     constract = web3.eth.contract(abi=contract_interface['abi'], bytecode=contract_interface['bin'])
-    canidates = content['canidates'].split(",")
+    candidates = content['candidates'].split(",")
+    strippedCandidates = []
+    for candidate in candidates:
+        strippedCandidates.append(candidate.strip())
     voters = content['voters'].split(",")
 
     try:
-        tx_hash = contract.deploy(args=(content['title'], 99999, canidates), \
+        tx_hash = contract.deploy(args=(content['title'], 99999, strippedCandidates), \
             transaction={'from': content['author'], 'gas': 4800000})
         tx_receipt = web3.eth.getTransactionReceipt(tx_hash)
         contract_address = tx_receipt['contractAddress']
         contract_instance = web3.eth.contract(contract_interface['abi'], contract_address, ContractFactoryClass=ConciseContract)
         authorize_users(contract_instance, voters, content['author'])
         response = app.response_class(
-            response= json.dumps('made election\n'+ request.url_root+'/Election/'+ contract_address),
+            response= json.dumps('made election\n'+ request.url_root+'/election/'+ contract_address),
             status=200,
             mimetype='application/json'
         )
@@ -129,10 +131,10 @@ def get_election(election_address):
 
     finished = False
     if end < datetime.datetime.utcnow():
-        finished = True 
+        finished = True
 
     localtime = end.replace(tzinfo=pytz.utc).astimezone(pytz.timezone("America/New_York")).strftime('%c')
-    
+
     return render_template('election.html', election_name=name, election_address=election_address, finished=finished, endtime=localtime)
 
 
@@ -140,7 +142,7 @@ def get_election(election_address):
 def vote():
     content = request.get_json(silent=True)
 
-    election_address = content['electionAddress'] 
+    election_address = content['electionAddress']
     contract_ins = web3.eth.contract(contract_interface['abi'], election_address, ContractFactoryClass=ConciseContract)
     index = -1
     length = contract_ins.getCandidatesCount()
