@@ -44,13 +44,11 @@ def authorize_all():
 def authorize_users(contract, voters, author):
     for voter in voters:
         voterList = []
-        voterList.append(voter)
+        voterList.append(voter.strip())
         try:
             contract.authorizeVoters(voterList, transact={'from': author})
         except ValueError:
             print(ValueError)
-            print('error'+author)
-
 
 authorize_all()
 
