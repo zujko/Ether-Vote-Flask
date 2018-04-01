@@ -66,10 +66,11 @@ function vote(election_address)
     }
 }
 
-function checkVoteEnabled()
+function checkVoteEnabled(finished)
 {
+    console.log(finished)
     option = $('#canidateSelect').find('option:selected').attr('value')
-    if( option !== "default" && $("#userAddress").val() !== "")
+    if( option !== "default" && $("#userAddress").val() !== "" && finished == "False")
     {
         $('#voteButton').removeAttr('disabled')
     }

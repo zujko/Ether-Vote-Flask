@@ -28,8 +28,13 @@
   User Adress:
   <input type="text" id="userAddress" oninput="checkVoteEnabled()"/>
   Candidate:
-  <select id="canidateSelect" onchange="checkVoteEnabled()"></select>
+  <select id="canidateSelect" onchange="checkVoteEnabled('{{finished}}')"></select>
   <a id="voteButton" href="#" onclick="vote('{{election_address}}')" class="btn btn-primary" disabled>Vote</a>
+  {% if finished %}
+  <script type="text/javascript">
+    $('#voteButton').attr('disabled', true)
+  </script>
+  {% endif %}
 </body>
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script src="../static/index.js"></script>
