@@ -25,34 +25,16 @@ contract_interface = compiled_sol['<stdin>:Election']
 
 contract = web3.eth.contract(abi=contract_interface['abi'], bytecode=contract_interface['bin'])
 
-tx_hash = contract.deploy(args=('Test Election', 10, ['Person 1', 'Person 2', 'Person 3']), transaction={'from': web3.eth.accounts[0], 'gas': 4800000})
-tx_receipt = web3.eth.getTransactionReceipt(tx_hash)
-contract_address = tx_receipt['contractAddress']
-
-# Contract instance in concise mode
-contract_instance = web3.eth.contract(contract_interface['abi'], contract_address, ContractFactoryClass=ConciseContract)
-
-def authorize_all():
-    """
-    Gives all accounts in the test blockchain access to vote
-    """
-    voters = []
-    for x in range(0, 10):
-        voters.append(web3.eth.accounts[x])
-    contract_instance.authorizeVoters(voters, transact={'from': web3.eth.accounts[0]})
-
 def authorize_users(contract, voters, author):
     for voter in voters:
         voterList = []
-        voterList.append(voter)
+        voterList.append(voter.strip())
         try:
             contract.authorizeVoters(voterList, transact={'from': author})
         except ValueError:
             print(ValueError)
             print('error'+author)
 
-
-authorize_all()
 
 app = Flask(__name__)
 
@@ -68,6 +50,7 @@ def new_election():
 @app.route('/createNewElection', methods=['POST'])
 def make_new_election():
     content = request.get_json(silent=True)
+    print(content)
 
     contract_interface = compiled_sol['<stdin>:Election']
     constract = web3.eth.contract(abi=contract_interface['abi'], bytecode=contract_interface['bin'])
@@ -124,16 +107,22 @@ def get_candidates(election_address):
 @app.route('/election/<election_address>', methods=['GET'])
 def get_election(election_address):
     cont = web3.eth.contract(contract_interface['abi'], election_address, ContractFactoryClass=ConciseContract)
-    name = cont.getElectionName()
+    name = ""
+    
+    try:
+        name = cont.getElectionName()
+    except:
+        return render_template('404.html'), 404
+
     endtime = int(cont.electionEnd())
     end = datetime.datetime.fromtimestamp(endtime)
 
     finished = False
     if end < datetime.datetime.utcnow():
-        finished = True
+        finished = True 
 
     localtime = end.replace(tzinfo=pytz.utc).astimezone(pytz.timezone("America/New_York")).strftime('%c')
-
+    
     return render_template('election.html', election_name=name, election_address=election_address, finished=finished, endtime=localtime)
 
 
@@ -144,14 +133,18 @@ def vote():
     election_address = content['electionAddress']
     contract_ins = web3.eth.contract(contract_interface['abi'], election_address, ContractFactoryClass=ConciseContract)
     index = -1
-    length = contract_ins.getCandidatesCount()
+    length = contract_ins.getCandidatesCount() 
+
     for a in range (0,length):
         listy = contract_ins.getCandidate(a)
         name = str(listy[0]).rstrip('\x00')
         if name == content['candidateName']:
             index = a
     if index != -1:
-        contract_ins.vote(index, transact={'from': content['userAddress']})
+        try:
+            contract_ins.vote(index, transact={'from': content['userAddress']})
+        except:
+            return app.response_class(status=403,mimetype='application/json')
 
     response = app.response_class(
         status=200,
