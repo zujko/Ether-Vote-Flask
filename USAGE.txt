@@ -1,0 +1,32 @@
+This is a guide on getting the Ether-Vote application up and running.
+
+1. Get Docker and docker compose installed on your machine.
+https://docs.docker.com/install/
+https://docs.docker.com/compose/install/
+
+2. Once you have Docker and docker composed installed navigate to the root directory of the project and run `docker-compose up` this will build the containers and run the app and blockchain in the foreground.
+
+3. You will see a lot of output, but keep a note of the following output in your console. Your account numbers will be different as they are generated everytime you start the blockchain.
+blockchain_1  | Available Accounts
+blockchain_1  | ==================
+blockchain_1  | (0) 0x8a82d909c8fffad3f37f48065e1aefeccdd6df15
+blockchain_1  | (1) 0x8e00aff64ba4d5e084c0ad464e0610663f0827a0
+blockchain_1  | (2) 0x3fcafeecade53db056fbb43d28bc694025727f5c
+blockchain_1  | (3) 0x356d2b3b7bd1b692e5ea1e51e5708a2932d7b295
+blockchain_1  | (4) 0xa5e3d042360a977e30a8d005930c6a2801c80082
+blockchain_1  | (5) 0x97c89ae370e2411d537a88ea62d0f90c600aac3d
+blockchain_1  | (6) 0x51bdd3fa6516b90353f112ae55ac8577c7881935
+blockchain_1  | (7) 0x0bbad415534ea464b431a1e72905249423f425c2
+blockchain_1  | (8) 0xa0f8e0e147f54abef10c1d80478d23adddc8b471
+blockchain_1  | (9) 0xf46f5a64c7b7da7aa98690278326c913db1da641
+
+
+These are the unlocked account on the test blockchain. You will need these addresses to create an election, authorize voters, and vote on elections.
+
+4. Navigate to localhost:5000, these should be a simple index page with a button to create a new election. Click on the button to create an election.
+
+5. On the create an election page, fill out the title which is the name of the election, author user address which will be one of the address from your blockchain output, Candidates which will be a comma seperated list of the names of the candidates of the election, and Voter addresses which will a comma separated list of the accounts that are authorized to vote in the election. Once you have filled everything out click on Make Election.
+
+6. You will be give a url which will represent the election, make sure to save that address as it is not stored by the application.
+
+7. Once you navigate to the election you simply have to add the user address to vote.
