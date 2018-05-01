@@ -1,0 +1,13 @@
+Peter Zujko
+    - initial solidity contract and research
+    - 404 page
+    - set up initial development environment
+    - set up docker
+    
+Chris Lemelin
+    - landing page
+    - create election front end and back end
+    - initial front end and back end for voting
+   - small solidity contract modifications
+    
+For this project we did not evenly split out the work, we both touched every part of the project. Chris did a lot of the front-end and the back-end associated with that front-end and Peter worked on a lot of the blockchain contract and the back-end parts that interact with the blockchain.
